@@ -1,5 +1,5 @@
 {
-    "name": "chatgpt-clone-server",
+    "name": "chatbot-server",
     "version": "1.0.0",
     "type": "module",
     "main": "server.mjs",
