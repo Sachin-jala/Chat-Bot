@@ -90,3 +90,64 @@ app.post('/api/chat', async (req, res) => {
 });
 
 //---- Chat: streaming (SSE) ----
+app.get('/api/stream', async (req, res) => {
+  try {
+    const threadId = req.query.threadId;
+    const userText = req.query.userText;
+    const thread = store.getThread(threadId);
+    if (!thread) {
+      res.writeHead(400, { 'Content-Type': 'text/event-stream' });
+      res.write(`event: error\n`);
+      res.write(`data: ${JSON.stringify({ error: 'Thread not found' })}\n\n`);
+      return res.end();
+    }
+
+    // Headers for SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const msgs = store.listMessages(threadId).map(m => ({ role: m.role, content: m.content }));
+    const context = [{ role: 'system', content: thread.system_prompt }, ...msgs.filter(m => m.role !== 'system')];
+
+    // Save user message immediately
+    const uMsg = { id: uuid(), thread_id: threadId, role: 'user', content: userText, created_at: Date.now() };
+    store.addMessage(uMsg);
+
+    // Stream from OpenAI
+    const stream = await client.chat.completions.create({
+      model: 'gpt-4o', // change to 'gpt-5' when available
+      messages: [...context, { role: 'user', content: userText }],
+      temperature: 0.7,
+      max_tokens: 800,
+      stream: true
+    });
+
+    let full = '';
+    for await (const part of stream) {
+      const token = part.choices?.[0]?.delta?.content || '';
+      if (token) {
+        full += token;
+        res.write(`event: token\n`);
+        res.write(`data: ${JSON.stringify({ token })}\n\n`);
+      }
+    }
+
+    // Save assistant message when complete
+    const aMsg = { id: uuid(), thread_id: threadId, role: 'assistant', content: full, created_at: Date.now() };
+    store.addMessage(aMsg);
+
+    res.write(`event: done\n`);
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
+  } catch (e) {
+    console.error(e);
+    try {
+      res.write(`event: error\n`);
+      res.write(`data: ${JSON.stringify({ error: e.message || 'Server error' })}\n\n`);
+      res.end();
+    } catch {}
+  }
+});
+
+app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
