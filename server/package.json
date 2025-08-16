@@ -2,10 +2,10 @@
     "name": "chatbot-server",
     "version": "1.0.0",
     "type": "module",
-    "main": "server.mjs",
+    "main": "app.py",
     "scripts": {
-        "start": "node server.mjs",
-        "dev": "node --watch server.mjs"
+        "start": "node app.py",
+        "dev": "node --watch app.py"
     },
     "dependencies": {
         "better-sqlite3": "^9.4.0",
