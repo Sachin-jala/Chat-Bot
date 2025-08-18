@@ -1,32 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My CatBot App</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chatbot — Streaming + RAG</title>
+  <link rel="stylesheet" href="static/css/style.css" />
 </head>
 <body>
-    <div class="app">
-        <aside class="sidebar">
-            <div class="brand">🤖 MyBot</div>
-            <button id="newThreadbtn" class="primary">+ New Chat</button>
-            <div id="threads" class="threads"></div>
-        </aside>
-
-        <main class="main">
-            <header class="topbar">
-                <div id="treadTitel" class="titel">Welcome</div>
-                <div class="spacer"></div>
-                <button id="renameBtn" class="ghost">Rename</button>
-                <button id="deleteBtn" class="danger">Delete</button>
-            </header>
-
-            <section id="messages" class="messages"></section>
-
-            <footer class="composer">
-                
-            </footer>
-        </main>
+  <div class="container">
+    <h1>Chatbot (FastAPI + WebSocket + RAG)</h1>
+    <div id="chatbox"></div>
+    <div class="controls">
+      <input id="userInput" type="text" placeholder="Type a message..." />
+      <button id="sendBtn">Send</button>
+      <label><input id="ragToggle" type="checkbox" /> Use RAG</label>
     </div>
+    <hr />
+    <h3>Upload docs for RAG</h3>
+    <form id="uploadForm">
+      <input type="file" id="fileInput" name="file" />
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+  <script src="static/js/chat.js"></script>
 </body>
 </html>

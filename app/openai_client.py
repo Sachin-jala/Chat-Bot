@@ -2,10 +2,10 @@ import os
 import openai
 from dotenv import load_dotenv
 
-laod_doteenv()
+load_dotenv()
 
-OPEN_API_KEY = os.environ.get('OPENAI_API_KEY')
-if not OPEN_API_KEY:
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+if not OPENAI_API_KEY:
     raise RuntimeError("OPENAI_API_KEY is not set in the environment variables.")
 openai.api_key = OPENAI_API_KEY
 
