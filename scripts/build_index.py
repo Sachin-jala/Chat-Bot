@@ -1,6 +1,6 @@
 import asyncio
 from pathlib import Path
-from app.openai_clint import emed_text
+from app.openai_client import embed_text
 from app.rag import RAG
 from app.utils import chunk_text
 
@@ -16,4 +16,4 @@ async def main():
     print ('Indexing complete.')
 
 if __name__ == '__main__':
-    asynico.run(main())
+    asyncio.run(main())
